@@ -198,7 +198,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2021-05-14 11:54:26 / Modified: 16:47:22" itemprop="dateCreated datePublished" datetime="2021-05-14T11:54:26+08:00">2021-05-14</time>
+      <time title="Created: 2021-05-14 11:54:26 / Modified: 19:11:03" itemprop="dateCreated datePublished" datetime="2021-05-14T11:54:26+08:00">2021-05-14</time>
     </span>
 
   
@@ -311,15 +311,46 @@
 </tr>
 </tbody></table>
 <div align="center">代理创建</div>
-|  vol  | origin | jdk  |  cg1  |  cg2  |
-| :---: | :----: | :--: | :---: | :---: |
-|  10w  |   4    |  32  |  80   |  56   |
-| 100w  |   5    |  39  |  190  |  186  |
-| 1000w |   18   | 159  | 1508  | 1810  |
-|  1e   |  388   | 1714 | 14482 | 18005 |
 
-
-
+<table>
+<thead>
+<tr>
+<th align="center">vol</th>
+<th align="center">origin</th>
+<th align="center">jdk</th>
+<th align="center">cg1</th>
+<th align="center">cg2</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">10w</td>
+<td align="center">4</td>
+<td align="center">32</td>
+<td align="center">80</td>
+<td align="center">56</td>
+</tr>
+<tr>
+<td align="center">100w</td>
+<td align="center">5</td>
+<td align="center">39</td>
+<td align="center">190</td>
+<td align="center">186</td>
+</tr>
+<tr>
+<td align="center">1000w</td>
+<td align="center">18</td>
+<td align="center">159</td>
+<td align="center">1508</td>
+<td align="center">1810</td>
+</tr>
+<tr>
+<td align="center">1e</td>
+<td align="center">388</td>
+<td align="center">1714</td>
+<td align="center">14482</td>
+<td align="center">18005</td>
+</tr>
+</tbody></table>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ol>
 <li>就像<a href="#%E6%88%91%E4%B8%8D%E6%98%AF%E6%88%91%EF%BC%9F%EF%BC%81">我不是我</a>一样，使用动态代理可能会出现一些有趣的问题。在实际编码过程中一定要注意，并仔细测试。</li>
 <li>从性能来看，三种动态代理调用成本大差不离，但是相比直接调用还是差了几个数量级，这在加入复杂的代理逻辑后会更甚之。不过随着时代的发展，这部分性能损耗完全可以被硬件升级或良好的架构带来的提升所掩盖。并且，相比动态代理带来的这部分损耗，它提供的能力和价值更加重要。</li>
