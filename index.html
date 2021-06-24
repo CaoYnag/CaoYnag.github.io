@@ -196,10 +196,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2021-05-14 11:54:26 / Modified: 19:11:03" itemprop="dateCreated datePublished" datetime="2021-05-14T11:54:26+08:00">2021-05-14</time>
+      <time title="Created: 2021-05-14 11:54:26" itemprop="dateCreated datePublished" datetime="2021-05-14T11:54:26+08:00">2021-05-14</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-06-01 11:45:40" itemprop="dateModified" datetime="2021-06-01T11:45:40+08:00">2021-06-01</time>
+      </span>
 
   
 </div>
@@ -212,7 +218,8 @@
     
     <div class="post-body" itemprop="articleBody">
           <h1 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h1><p>代理模式(<code>Proxy</code>)是设计模式中结构型模式的一种,用以实现对目标访问的控制。</p>
-<p>结构如下：<br><img src="/img/proxy_pattern_structure.png" alt="proxy pattern structure"></p>
+<p>结构如下：</p>
+<img src="/2021/05/14/java-dynamic-proxy/proxy_pattern_structure.png" class="" title="proxy pattern structure">
 <p>当目标接口需要额外的操作才能访问，或是想要对目标访问进行控制时，都可以使用代理模式。<br>如图，<code>RealSubject</code>和<code>Proxy</code>派生自接口<code>Subject</code>，<code>RealSubject</code>是<code>Subject</code>的一个真实的实现，<code>Proxy</code>的对应接口是实际是对<code>RealSubject</code>接口的一个包装，可以在进行<code>RealSubject</code>接口调用前后执行额外操作，如进行设置环境、权限控制、资源控制等，甚至是修改结果。</p>
 <p>从这点上来讲，代理模式、装饰器模式(<code>Decorator</code>, <code>Wrapper</code>)和适配器模式(<code>Adapter</code>)非常相似，不过这里就不做比较了。</p>
 <h1 id="Java的动态代理"><a href="#Java的动态代理" class="headerlink" title="Java的动态代理"></a>Java的动态代理</h1><p>代理模式可以帮助我们解决很多问题。不过，每有一个接口需要进行代理，就需要写一个<code>XXProxy</code>类，然后实现<code>XXFoo</code>方法。在项目中可能会有非常多的接口需要代理，而他们的代理的逻辑可能是一致的，那么就需要做很多大量重复工作了。当然我们也可以编写脚本或者工具自动生成代码，比如<code>ice</code>、<code>grpc</code>这些的<code>rpc</code>框架就是这么干的。</p>
@@ -457,12 +464,15 @@
   <footer class="footer">
     <div class="footer-inner">
 
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">陇ICP备2021001897号 </a>
+      <img src="http://www.beian.gov.cn/portal/download">
+  </div>
 
 <div class="copyright">
   &copy; 
   <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-heart"></i>
+    <i class="fa fa-asterisk"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Spes</span>
 </div>
