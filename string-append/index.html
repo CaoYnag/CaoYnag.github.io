@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;blogs.lifesucks.cn&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Pisces&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;Searching...&quot;,&quot;empty&quot;:&quot;We didn&#39;t find any results for the search: ${query}&quot;,&quot;hits_time&quot;:&quot;${hits} results found in ${time} ms&quot;,&quot;hits&quot;:&quot;${hits} results found&quot;}}</script>
+<meta name="description" content="在使用libcurl的过程中，按照教程使用string类型进行数据接收： 123456size_t write_data(void *buffer, size_t size, size_t nmemb, void *userp)&amp;#123;	auto sz &#x3D; size * nmemb;	((string*)userp)-&gt;append((char*)buffer, 0, sz);	retu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="string::append的问题">
+<meta property="og:url" content="https://blogs.lifesucks.cn/string-append/index.html">
+<meta property="og:site_name" content="Lifesucks">
+<meta property="og:description" content="在使用libcurl的过程中，按照教程使用string类型进行数据接收： 123456size_t write_data(void *buffer, size_t size, size_t nmemb, void *userp)&amp;#123;	auto sz &#x3D; size * nmemb;	((string*)userp)-&gt;append((char*)buffer, 0, sz);	retu">
+<meta property="og:locale">
+<meta property="article:published_time" content="2021-07-05T19:55:29.000Z">
+<meta property="article:modified_time" content="2021-07-05T19:55:29.162Z">
+<meta property="article:author" content="Spes">
+<meta property="article:tag" content="c++">
+<meta property="article:tag" content="grammer">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blogs.lifesucks.cn/string-append/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;blogs.lifesucks.cn&#x2F;string-append&#x2F;&quot;,&quot;path&quot;:&quot;string-append&#x2F;&quot;,&quot;title&quot;:&quot;string::append的问题&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>string::append的问题 | Lifesucks</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Lifesucks</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Spes"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Spes</p>
+  <div class="site-description" itemprop="description">some blogs, about techs, about life.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh">
+    <link itemprop="mainEntityOfPage" href="https://blogs.lifesucks.cn/string-append/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Spes">
+      <meta itemprop="description" content="some blogs, about techs, about life.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lifesucks">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          string::append的问题
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-07-06 03:55:29" itemprop="dateCreated datePublished" datetime="2021-07-06T03:55:29+08:00">2021-07-06</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>在使用<code>libcurl</code>的过程中，按照教程使用<code>string</code>类型进行数据接收：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">size_t</span> <span class="title">write_data</span><span class="params">(<span class="keyword">void</span> *buffer, <span class="keyword">size_t</span> size, <span class="keyword">size_t</span> nmemb, <span class="keyword">void</span> *userp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">auto</span> sz = size * nmemb;</span><br><span class="line">	((string*)userp)-&gt;<span class="built_in">append</span>((<span class="keyword">char</span>*)buffer, <span class="number">0</span>, sz);</span><br><span class="line">	<span class="keyword">return</span> sz;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但是在测试过程中，接收图片时却总是出现问题，收到的数据远小于原始数据。</p>
+<p>于是编写测试代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test_append</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">char</span> buff[<span class="number">1024</span>];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1024</span>; ++i)</span><br><span class="line">		buff[i] = <span class="built_in">rand</span>() % <span class="number">256</span>;</span><br><span class="line">	cout &lt;&lt; <span class="string">&quot;append(n)   : &quot;</span> &lt;&lt; <span class="built_in">string</span>().<span class="built_in">append</span>(buff, <span class="number">1024</span>).<span class="built_in">size</span>() &lt;&lt; endl;</span><br><span class="line">	cout &lt;&lt; <span class="string">&quot;append(p, n): &quot;</span> &lt;&lt; <span class="built_in">string</span>().<span class="built_in">append</span>(buff, <span class="number">0</span>, <span class="number">1024</span>).<span class="built_in">size</span>() &lt;&lt; endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>得到输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">append(n)   : 1024</span><br><span class="line">append(p, n): 131</span><br></pre></td></tr></table></figure>
+<p>调试发现，<code>buff[131]</code>为0。</p>
+<p>进一步编写测试：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test_append</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">char</span>* str = <span class="string">&quot;0\000123456789&quot;</span>;</span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">int</span> sz = <span class="number">12</span>;</span><br><span class="line">	cout &lt;&lt; <span class="string">&quot;append(n)   : &quot;</span> &lt;&lt; <span class="built_in">string</span>().<span class="built_in">append</span>(str, sz).<span class="built_in">size</span>() &lt;&lt; endl;</span><br><span class="line">	cout &lt;&lt; <span class="string">&quot;append(p, n): &quot;</span> &lt;&lt; <span class="built_in">string</span>().<span class="built_in">append</span>(str, <span class="number">0</span>, sz).<span class="built_in">size</span>() &lt;&lt; endl;</span><br><span class="line">	cout &lt;&lt; <span class="string">&quot;append(s, n): &quot;</span> &lt;&lt; <span class="built_in">string</span>().<span class="built_in">append</span>(<span class="built_in">string</span>(str, sz)).<span class="built_in">size</span>() &lt;&lt; endl;</span><br><span class="line">	cout &lt;&lt; <span class="string">&quot;append(s)   : &quot;</span> &lt;&lt; <span class="built_in">string</span>().<span class="built_in">append</span>(<span class="built_in">string</span>(str)).<span class="built_in">size</span>() &lt;&lt; endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>得到输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">append(n)   : 12</span><br><span class="line">append(p, n): 1</span><br><span class="line">append(s, n): 12</span><br><span class="line">append(s)   : 1</span><br></pre></td></tr></table></figure>
+
+<p>那么可以大致猜测，调用<code>append(str, 0, sz)</code>和<code>string(str)</code>时，将<code>str</code>作为<code>\0</code>结尾的字符串进行了截断。<br>翻看头文件进行验证。</p>
+<p>首先是调用<code>string().append(buff, 1024)</code>时，实际上是调用了这个函数:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">basic_string&amp; <span class="title">append</span><span class="params">(<span class="keyword">const</span> _CharT* __s, size_type __n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    __glibcxx_requires_string_len(__s, __n);</span><br><span class="line">    _M_check_length(<span class="built_in">size_type</span>(<span class="number">0</span>), __n, <span class="string">&quot;basic_string::append&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> _M_append(__s, __n);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>而调用<code>string().append(buff, 0, 1024)</code>时，则是调用:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">basic_string&amp; <span class="title">append</span><span class="params">(<span class="keyword">const</span> basic_string&amp; __str, size_type __pos, size_type __n = npos)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> _M_append(__str._M_data()</span><br><span class="line">                   + __str._M_check(__pos, <span class="string">&quot;basic_string::append&quot;</span>),</span><br><span class="line">                   __str._M_limit(__pos, __n)); </span><br><span class="line">&#125;</span><br><span class="line">size_type _M_check(size_type __pos, <span class="keyword">const</span> <span class="keyword">char</span>* __s) <span class="keyword">const</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (__pos &gt; <span class="keyword">this</span>-&gt;<span class="built_in">size</span>())</span><br><span class="line">        __throw_out_of_range_fmt(__N(<span class="string">&quot;%s: __pos (which is %zu) &gt; &quot;</span></span><br><span class="line">                                     <span class="string">&quot;this-&gt;size() (which is %zu)&quot;</span>),</span><br><span class="line">                                 __s, __pos, <span class="keyword">this</span>-&gt;<span class="built_in">size</span>());</span><br><span class="line">    <span class="keyword">return</span> __pos;</span><br><span class="line">&#125;</span><br><span class="line">size_type _M_limit(size_type __pos, size_type __off) <span class="keyword">const</span> _GLIBCXX_NOEXCEPT</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">bool</span> __testoff =  __off &lt; <span class="keyword">this</span>-&gt;<span class="built_in">size</span>() - __pos;</span><br><span class="line">    <span class="keyword">return</span> __testoff ? __off : <span class="keyword">this</span>-&gt;<span class="built_in">size</span>() - __pos;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以注意到，这里原本<code>const char*</code>的实参实际上是对应了<code>const basic_string&amp; __str</code>，也就是说，先调用了<code>string(str)</code>构造了一个临时的<code>string</code>对象。数据就是在这里被截断的。</p>
+<p><code>string(const char*)</code>的源码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">basic_string</span>(<span class="keyword">const</span> _CharT* __s, <span class="keyword">const</span> _Alloc&amp; __a = _Alloc()) : _M_dataplus(_M_local_data(), __a)</span><br><span class="line">&#123;</span><br><span class="line">    _M_construct(__s, __s ? __s + traits_type::<span class="built_in">length</span>(__s) : __s+npos); </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> _CharT, <span class="keyword">typename</span> _Traits, <span class="keyword">typename</span> _Alloc&gt;</span><br><span class="line"><span class="keyword">void</span> basic_string&lt;_CharT, _Traits, _Alloc&gt;::_M_construct(size_type __n, _CharT __c)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (__n &gt; <span class="built_in">size_type</span>(_S_local_capacity))</span><br><span class="line">    &#123;</span><br><span class="line">        _M_data(_M_create(__n, <span class="built_in">size_type</span>(<span class="number">0</span>)));</span><br><span class="line">        _M_capacity(__n);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (__n)</span><br><span class="line">        <span class="keyword">this</span>-&gt;_S_assign(_M_data(), __n, __c);</span><br><span class="line"></span><br><span class="line">    _M_set_length(__n);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果不是遇到问题，平时还真不一定能注意到这些细节。总之，多学习多记录吧。</p>
+<p>最后，我的测试环境如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[spes@Gensoukyo bin]$ g++ --version</span><br><span class="line">g++ (GCC) 10.1.0</span><br><span class="line">Copyright © 2020 Free Software Foundation, Inc.</span><br><span class="line">本程序是自由软件；请参看源代码的版权声明。本软件没有任何担保；</span><br><span class="line">包括没有适销性和某一专用目的下的适用性担保。</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/c/" rel="tag"># c++</a>
+              <a href="/tags/grammer/" rel="tag"># grammer</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/java-dynamic-proxy/" rel="prev" title="Java中的动态代理">
+                  <i class="fa fa-chevron-left"></i> Java中的动态代理
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">陇ICP备2021001897号 </a>
+      <img src="http://www.beian.gov.cn/portal/download">
+  </div>
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-asterisk"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Spes</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

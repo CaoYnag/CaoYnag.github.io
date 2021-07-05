@@ -19,28 +19,28 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
 
-<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;example.com&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Pisces&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;Searching...&quot;,&quot;empty&quot;:&quot;We didn&#39;t find any results for the search: ${query}&quot;,&quot;hits_time&quot;:&quot;${hits} results found in ${time} ms&quot;,&quot;hits&quot;:&quot;${hits} results found&quot;}}</script>
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;blogs.lifesucks.cn&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Pisces&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;Searching...&quot;,&quot;empty&quot;:&quot;We didn&#39;t find any results for the search: ${query}&quot;,&quot;hits_time&quot;:&quot;${hits} results found in ${time} ms&quot;,&quot;hits&quot;:&quot;${hits} results found&quot;}}</script>
 <meta name="description" content="代理模式代理模式(Proxy)是设计模式中结构型模式的一种,用以实现对目标访问的控制。 结构如下：  当目标接口需要额外的操作才能访问，或是想要对目标访问进行控制时，都可以使用代理模式。如图，RealSubject和Proxy派生自接口Subject，RealSubject是Subject的一个真实的实现，Proxy的对应接口是实际是对RealSubject接口的一个包装，可以在进行RealSub">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java中的动态代理">
-<meta property="og:url" content="http://example.com/2021/05/14/java-dynamic-proxy/index.html">
+<meta property="og:url" content="https://blogs.lifesucks.cn/java-dynamic-proxy/index.html">
 <meta property="og:site_name" content="Lifesucks">
 <meta property="og:description" content="代理模式代理模式(Proxy)是设计模式中结构型模式的一种,用以实现对目标访问的控制。 结构如下：  当目标接口需要额外的操作才能访问，或是想要对目标访问进行控制时，都可以使用代理模式。如图，RealSubject和Proxy派生自接口Subject，RealSubject是Subject的一个真实的实现，Proxy的对应接口是实际是对RealSubject接口的一个包装，可以在进行RealSub">
 <meta property="og:locale">
-<meta property="og:image" content="http://example.com/2021/05/14/java-dynamic-proxy/proxy_pattern_structure.png">
+<meta property="og:image" content="https://blogs.lifesucks.cn/java-dynamic-proxy/proxy_pattern_structure.png">
 <meta property="article:published_time" content="2021-05-14T03:54:26.000Z">
 <meta property="article:modified_time" content="2021-06-01T03:45:40.060Z">
 <meta property="article:author" content="Spes">
 <meta property="article:tag" content="java">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2021/05/14/java-dynamic-proxy/proxy_pattern_structure.png">
+<meta name="twitter:image" content="https://blogs.lifesucks.cn/java-dynamic-proxy/proxy_pattern_structure.png">
 
 
-<link rel="canonical" href="http://example.com/2021/05/14/java-dynamic-proxy/">
+<link rel="canonical" href="https://blogs.lifesucks.cn/java-dynamic-proxy/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;http:&#x2F;&#x2F;example.com&#x2F;2021&#x2F;05&#x2F;14&#x2F;java-dynamic-proxy&#x2F;&quot;,&quot;path&quot;:&quot;2021&#x2F;05&#x2F;14&#x2F;java-dynamic-proxy&#x2F;&quot;,&quot;title&quot;:&quot;Java中的动态代理&quot;}</script>
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;blogs.lifesucks.cn&#x2F;java-dynamic-proxy&#x2F;&quot;,&quot;path&quot;:&quot;java-dynamic-proxy&#x2F;&quot;,&quot;title&quot;:&quot;Java中的动态代理&quot;}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
 <title>Java中的动态代理 | Lifesucks</title><script src="/js/config.js"></script>
@@ -136,13 +136,15 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-count">3</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">2</span>
-        <span class="site-state-item-name">tags</span>
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
 </div>
@@ -180,7 +182,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/14/java-dynamic-proxy/">
+    <link itemprop="mainEntityOfPage" href="https://blogs.lifesucks.cn/java-dynamic-proxy/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -226,7 +228,7 @@
     <div class="post-body" itemprop="articleBody">
         <h1 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h1><p>代理模式(<code>Proxy</code>)是设计模式中结构型模式的一种,用以实现对目标访问的控制。</p>
 <p>结构如下：</p>
-<img src="/2021/05/14/java-dynamic-proxy/proxy_pattern_structure.png" class="" title="proxy pattern structure">
+<img src="/java-dynamic-proxy/proxy_pattern_structure.png" class="" title="proxy pattern structure">
 <p>当目标接口需要额外的操作才能访问，或是想要对目标访问进行控制时，都可以使用代理模式。<br>如图，<code>RealSubject</code>和<code>Proxy</code>派生自接口<code>Subject</code>，<code>RealSubject</code>是<code>Subject</code>的一个真实的实现，<code>Proxy</code>的对应接口是实际是对<code>RealSubject</code>接口的一个包装，可以在进行<code>RealSubject</code>接口调用前后执行额外操作，如进行设置环境、权限控制、资源控制等，甚至是修改结果。</p>
 <p>从这点上来讲，代理模式、装饰器模式(<code>Decorator</code>, <code>Wrapper</code>)和适配器模式(<code>Adapter</code>)非常相似，不过这里就不做比较了。</p>
 <h1 id="Java的动态代理"><a href="#Java的动态代理" class="headerlink" title="Java的动态代理"></a>Java的动态代理</h1><p>代理模式可以帮助我们解决很多问题。不过，每有一个接口需要进行代理，就需要写一个<code>XXProxy</code>类，然后实现<code>XXFoo</code>方法。在项目中可能会有非常多的接口需要代理，而他们的代理的逻辑可能是一致的，那么就需要做很多大量重复工作了。当然我们也可以编写脚本或者工具自动生成代码，比如<code>ice</code>、<code>grpc</code>这些的<code>rpc</code>框架就是这么干的。</p>
@@ -386,11 +388,14 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2021/05/07/hellohexo/" rel="prev" title="Hello, Hexo!">
+                <a href="/hellohexo/" rel="prev" title="Hello, Hexo!">
                   <i class="fa fa-chevron-left"></i> Hello, Hexo!
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/string-append/" rel="next" title="string::append的问题">
+                  string::append的问题 <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
     </footer>
