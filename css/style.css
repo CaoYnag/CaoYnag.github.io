@@ -582,7 +582,7 @@ a.article-title:hover {
   margin: 1.1em 0;
 }
 .article-entry img {
-  width: 100%;
+  max-width: 100%;
 }
 .article-entry a {
   color: #258fb8;
