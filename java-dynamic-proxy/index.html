@@ -74,7 +74,11 @@
         <h1 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h1><p>代理模式(<code>Proxy</code>)是设计模式中结构型模式的一种,用以实现对目标访问的控制。</p>
 <p>结构如下：</p>
 <img src="/java-dynamic-proxy/proxy_pattern_structure.png" class="" title="proxy pattern structure">
+
+
 <p>当目标接口需要额外的操作才能访问，或是想要对目标访问进行控制时，都可以使用代理模式。<br>如图，<code>RealSubject</code>和<code>Proxy</code>派生自接口<code>Subject</code>，<code>RealSubject</code>是<code>Subject</code>的一个真实的实现，<code>Proxy</code>的对应接口是实际是对<code>RealSubject</code>接口的一个包装，可以在进行<code>RealSubject</code>接口调用前后执行额外操作，如进行设置环境、权限控制、资源控制等，甚至是修改结果。</p>
+<span id="more"></span>
+
 <p>从这点上来讲，代理模式、装饰器模式(<code>Decorator</code>, <code>Wrapper</code>)和适配器模式(<code>Adapter</code>)非常相似，不过这里就不做比较了。</p>
 <h1 id="Java的动态代理"><a href="#Java的动态代理" class="headerlink" title="Java的动态代理"></a>Java的动态代理</h1><p>代理模式可以帮助我们解决很多问题。不过，每有一个接口需要进行代理，就需要写一个<code>XXProxy</code>类，然后实现<code>XXFoo</code>方法。在项目中可能会有非常多的接口需要代理，而他们的代理的逻辑可能是一致的，那么就需要做很多大量重复工作了。当然我们也可以编写脚本或者工具自动生成代码，比如<code>ice</code>、<code>grpc</code>这些的<code>rpc</code>框架就是这么干的。</p>
 <p>但是，<code>Java</code>作为拥有反射这种上帝视角的语言当然不会止步于此，于是动态代理出现辣！动态代理可以在运行时生成Proxy类，码农（我）在编码时只需要实现一个通用的代理函数就好了。<code>spring</code>框架广泛运用了动态代理技术。</p>
@@ -221,7 +225,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://blogs.lifesucks.cn/java-dynamic-proxy/" data-id="ckrbdah6u0007ucs1fg66ddxk" data-title="Java中的动态代理" class="article-share-link">Share</a>
+      <a data-url="https://blogs.lifesucks.cn/java-dynamic-proxy/" data-id="ckrbsoqwz00083ys11ip4f7a9" data-title="Java中的动态代理" class="article-share-link">Share</a>
       
       
         <a href="/java-dynamic-proxy/#comments" class="article-comment-link">
@@ -230,7 +234,7 @@
         </a>
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/" rel="tag">代理模式</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/" rel="tag">动态代理</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/" rel="tag">动态代理</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li></ul>
 
     </footer>
   </div>
@@ -270,7 +274,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/blogs/" rel="tag">blogs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grammar/" rel="tag">grammar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/" rel="tag">代理模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/" rel="tag">动态代理</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/blogs/" rel="tag">blogs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grammar/" rel="tag">grammar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/" rel="tag">动态代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li></ul>
     </div>
   </div>
 
@@ -281,6 +285,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/mobile-device-as-2nd-screen/">使用移动设备作为Linux副屏</a>
+          </li>
         
           <li>
             <a href="/string-append/">string::append的问题</a>
@@ -303,7 +311,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c++</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c++</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/linux/%E6%97%A5%E5%B8%B8%E6%8A%98%E8%85%BE/">日常折腾</a></li></ul></li></ul>
     </div>
   </div>
 
