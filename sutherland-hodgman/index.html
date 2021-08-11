@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>多边形裁减 - Sutherland Hodgman算法 | Lifesucks</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Lifesucks</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-sutherland-hodgman" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/sutherland-hodgman/" class="article-date">
+  <time class="dt-published" datetime="2021-06-01T06:32:01.000Z" itemprop="datePublished">2021-06-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/cg/">cg</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      多边形裁减 - Sutherland Hodgman算法
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>之前在做矢量地图相关内容时用到了<code>boost</code>库，但是在进行矢量切片时，我发现<code>boost::geometry::intersection</code>存在bug：<a target="_blank" rel="noopener" href="https://github.com/boostorg/geometry/issues/630">boost::intersection produces wrong results</a>。回想起计算机图形学一书中有提到相关内容，回去翻看，于是发现了<code>Sutherland Hodgman</code>算法。<br>mapbox的开源切片工具也使用了<code>Sutherland Hodgman</code>算法。</p>
+<span id="more"></span>
+
+<h1 id="Sutherland-Hadgman-算法"><a href="#Sutherland-Hadgman-算法" class="headerlink" title="Sutherland Hadgman 算法"></a>Sutherland Hadgman 算法</h1><p><code>Sutherland Hodgman 算法</code>是一种使用凸多边形裁减凸多边形的算法。如同其他裁减算法一样， <code>Sutherland Hodgman</code>算法也是每次使用裁减窗口的一条边去裁减目标，当所有的边都裁剪以后，得到的就是最终的结果了。</p>
+<p>算法主要内容如下：<br>用一条边e裁减目标多边形时，对于多边形的每一条边PQ，可能会有如下4种场景：</p>
+<img src="/sutherland-hodgman/edge_cases.jpg" class="" title="cases">
+<p>图中<code>inside</code>代表裁减窗口内部。对于这4种场景，采取动作如下：</p>
+<ol>
+<li>保留Q点</li>
+<li>保留交点I和Q点</li>
+<li>保留交点I</li>
+<li>不保留任何点</li>
+</ol>
+<p>例如，用边<code>e</code>裁减矩形<code>ABCD</code>:</p>
+<img src="/sutherland-hodgman/clip_exp1.jpg" class="" title="expample1">
+<p>有如下流程：</p>
+<ol>
+<li>边<code>AB</code>满足场景2，保留交点<code>E</code>和终点<code>B</code></li>
+<li>边<code>BC</code>满足场景1，保留终点<code>C</code></li>
+<li>边<code>CD</code>满足场景3，保留交点<code>F</code></li>
+<li>边<code>DA</code>满足场景4，不保留任何点</li>
+</ol>
+<p>最终得到矩形<code>EBCF</code>。</p>
+<p><strong>注意</strong>：点在边上作为点在内部处理。</p>
+<h1 id="相关定义及算法伪码"><a href="#相关定义及算法伪码" class="headerlink" title="相关定义及算法伪码"></a>相关定义及算法伪码</h1><p>假设有基础数据类型定义如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">point</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="keyword">float</span> x, y;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">line</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	point a, b;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">polygon</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	vector&lt;point&gt; points;</span><br><span class="line">	vector&lt;point&gt; normals; <span class="comment">// normal of each edge</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>则， <code>Sutherland Hodgman</code> 伪码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">polygon <span class="title">sutherland_hodgman</span><span class="params">(polygon poly, polygon wnd)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="function">vector&lt;point&gt; <span class="title">pts</span><span class="params">(poly.points())</span></span>;</span><br><span class="line">	vector&lt;point&gt; tmp;</span><br><span class="line">	<span class="keyword">for</span>(line l : wnd.edges)</span><br><span class="line">	&#123;</span><br><span class="line">		line nm = wnd.<span class="built_in">normals</span>(l);</span><br><span class="line">		<span class="keyword">for</span>(point cur : pts)</span><br><span class="line">		&#123;</span><br><span class="line">			point n = <span class="built_in">next_point</span>(pts, cur);</span><br><span class="line">			<span class="function">line <span class="title">e</span><span class="params">(cur, n)</span></span>;</span><br><span class="line">			</span><br><span class="line">			<span class="keyword">int</span> state = <span class="number">0</span>;</span><br><span class="line">			<span class="keyword">if</span>(<span class="built_in">outside</span>(n, nm)) state |= <span class="number">0x1</span>;</span><br><span class="line">			<span class="keyword">if</span>(<span class="built_in">outside</span>(cur, nm)) state |= <span class="number">0x2</span>;</span><br><span class="line">			</span><br><span class="line">			<span class="built_in">swith</span>(state)</span><br><span class="line">			&#123;</span><br><span class="line">			<span class="keyword">case</span> <span class="number">0</span>: <span class="comment">// both inside</span></span><br><span class="line">				tmp.<span class="built_in">push</span>(n);</span><br><span class="line">			<span class="keyword">case</span> <span class="number">1</span>: <span class="comment">// leave poly.</span></span><br><span class="line">				tmp.<span class="built_in">push</span>(<span class="built_in">intersection</span>(l, e)); <span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> <span class="number">2</span>: <span class="comment">// enter poly</span></span><br><span class="line">			&#123;</span><br><span class="line">				tmp.<span class="built_in">push</span>(<span class="built_in">intersection</span>(l, e));</span><br><span class="line">				tmp.<span class="built_in">push</span>(n);</span><br><span class="line">			&#125;<span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> <span class="number">3</span>: <span class="comment">// both outside, do nothing.</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		pts.<span class="built_in">swap</span>(tmp);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">polygon</span>(pts);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="矩形裁剪框下的Sutherland-Hodgman"><a href="#矩形裁剪框下的Sutherland-Hodgman" class="headerlink" title="矩形裁剪框下的Sutherland Hodgman"></a>矩形裁剪框下的<code>Sutherland Hodgman</code></h1><p>对于任意的多边形裁剪窗来说，要判断点的位置比较麻烦，需要计算裁减窗口每条边的法向量，然后通过点积进行比较。<br>同样，求两条边的交点也很麻烦。</p>
+<p>但是，一般情况下，裁减窗口都是一个矩形，而且是一个水平放置的矩形。那么这个过程就非常轻松愉快了。</p>
+<p>假设矩形裁减窗口定义如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">rect</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">double</span> l, t, r, b; <span class="comment">// left top right bottom</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>例如，当使用矩形的 <code>l</code> 进行裁减时，要判断点的位置，直接 <code>pt.y &lt; rect.l</code> 即可。<br>而求交点，就是求 <code>x = l</code> 时的 <code>y</code> 值。</p>
+<p>使用矩形窗口进行裁减的整个流程可以用如下伪码表示：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">polygon <span class="title">sutherland_hodgman</span><span class="params">(polygon poly, rect rc)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function">vector&lt;point&gt; <span class="title">pts</span><span class="params">(poly.points)</span></span>;</span><br><span class="line">	vector&lt;point&gt; tmp;</span><br><span class="line">    </span><br><span class="line">    point P = <span class="built_in">first_point</span>(poly);</span><br><span class="line">    <span class="comment">// clip with top edge</span></span><br><span class="line">    <span class="keyword">for</span>(point cur : pts)</span><br><span class="line">    &#123;</span><br><span class="line">		point n = <span class="built_in">next_point</span>(pts, cur);</span><br><span class="line">        <span class="keyword">int</span> state = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span>(n.y &lt; rc.l) state |= <span class="number">0x1</span>;</span><br><span class="line">        <span class="keyword">if</span>(cur.y &lt; rc.l) state |= <span class="number">0x2</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="built_in"><span class="keyword">switch</span></span>(state)</span><br><span class="line">        &#123;</span><br><span class="line">			<span class="comment">// add points to tmp ...</span></span><br><span class="line">		&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    pts.<span class="built_in">swap</span>(tmp);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// clip with bottom</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">// clip with left edge</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">// clip with right edge</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">polygon</span>(pts);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>单看代码的话，可能会感觉反而变复杂了，但实际编码难度则小了不少，性能也有所提高。</p>
+<p>跑一个简单的 <code>benchmark</code>, 得到数据如下：</p>
+<table>
+<thead>
+<tr>
+<th align="center">vol</th>
+<th align="center">sh</th>
+<th align="center">sh_rc</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1w</td>
+<td align="center">104</td>
+<td align="center">10</td>
+</tr>
+<tr>
+<td align="center">10w</td>
+<td align="center">1031</td>
+<td align="center">89</td>
+</tr>
+<tr>
+<td align="center">100w</td>
+<td align="center">10365</td>
+<td align="center">887</td>
+</tr>
+</tbody></table>
+<p>表中， <code>sh</code> 代表普通 <code>sutherland hodgman</code> 算法实现，矩形裁减窗口也是使用 <code>polygon</code> 定义。<code>sh_gl</code> 代表使用 <code>rect</code> 类型作为裁减窗口的算法实现。</p>
+<p>可以看出，矩形裁减窗口下，算法效率提高了10倍以上。</p>
+<p>以上的实现代码可以在<a target="_blank" rel="noopener" href="https://github.com/CaoYnag/cpputils/blob/master/src/algo.cpp">这里</a>找到。</p>
+<h1 id="存在的问题"><a href="#存在的问题" class="headerlink" title="存在的问题"></a>存在的问题</h1><p>如书上描述的那样，<code>Sutherland Hodgman</code>是用凸多边形裁剪凸多边形的算法，如果用来处理凹多边形，则会有一些问题。</p>
+<p>考虑如下的场景：</p>
+<img src="/sutherland-hodgman/clip_exp2.jpg" class="" title="example2">
+
+<p>用边<code>e</code>裁剪凹多边形<code>ABCDE</code>，按照直观来看，应该得到两个小三角形<code>FBG</code>和<code>HDI</code>。但是按照<code>Sutherland Hodgman</code>算法的流程，只会得到一个点序列<code>FBGHDI</code>，其中，边<code>IF</code>和<code>GH</code>实际上重叠了。</p>
+<p>如<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Sutherland%E2%80%93Hodgman_algorithm">wiki</a>所述，这对渲染不会造成影响。<code>Mapbox</code>的开源工具正是这样进行矢量数据裁剪。并且，为了解决矢量瓦片边框问题，裁剪窗口总是比显示窗口要大的，所以上面这个例子中两个小三角形的连接处是永远不会被渲染，最终的效果应该是这样：</p>
+<img src="/sutherland-hodgman/render_effect.jpg" class="" title="render effect">
+
+<p>至于怎么裁减这样的凹多边形，就留到后面的文章吧 :D</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://blogs.lifesucks.cn/sutherland-hodgman/" data-id="cks6vj938000r34s118xa19hr" data-title="多边形裁减 - Sutherland Hodgman算法" class="article-share-link">Share</a>
+      
+      
+        <a href="/sutherland-hodgman/#comments" class="article-comment-link">
+          <span class="post-comments-count valine-comment-count" data-xid="/sutherland-hodgman/" itemprop="commentCount"></span>
+          Comments
+        </a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cg/" rel="tag">cg</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/string-append/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          string::append的问题
+        
+      </div>
+    </a>
+  
+  
+    <a href="/java-dynamic-proxy/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Java中的动态代理</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+  <section id="comments" class="vcomment">
+
+  </section>
+</section>
+        <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/blogs/" rel="tag">blogs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cg/" rel="tag">cg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grammar/" rel="tag">grammar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/" rel="tag">动态代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/mobile-device-as-2nd-screen/">使用移动设备作为Linux副屏</a>
+          </li>
+        
+          <li>
+            <a href="/string-append/">string::append的问题</a>
+          </li>
+        
+          <li>
+            <a href="/sutherland-hodgman/">多边形裁减 - Sutherland Hodgman算法</a>
+          </li>
+        
+          <li>
+            <a href="/java-dynamic-proxy/">Java中的动态代理</a>
+          </li>
+        
+          <li>
+            <a href="/hellohexo/">Hello, Hexo!</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c++</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/cg/">cg</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8%E6%8A%98%E8%85%BE/">日常折腾</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8%E6%8A%98%E8%85%BE/linux/">linux</a></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li></ul>
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  
+
+  
+    <div id="beian" class="beian">
+        <a target="_blank" rel="noopener" href="https://beian.miit.gov.cn">陇ICP备2021001897号</a>
+      
+    </div>
+    
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 By Autoload<br>
+      Driven - <a href="https://hexo.io/" target="_blank">Hexo</a>|Theme - <a href="https://github.com/autoload/hexo-theme-auto" target="_blank">Auto</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  
+<script src="https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js"></script>
+
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = 'false' == true;
+    var verify = 'false' == true;
+    new Valine({
+        el: '.vcomment',
+        notify: notify,
+        verify: verify,
+        appId: "ELq6YoLEdIYWW6r5D9h9w0wO-gzGzoHsz",
+        appKey: "IKk1GUtDqU8rP1sUjm2L1YJQ",
+        placeholder: "say sth?",
+        pageSize:'10',
+        avatar:'mm',
+        lang:'en'
+    });
+</script>
+
+  </div>
+</body>
+</html>
