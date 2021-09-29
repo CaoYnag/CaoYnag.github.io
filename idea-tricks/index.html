@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Idea 使用小技巧 | Lifesucks</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Lifesucks</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-idea-tricks" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/idea-tricks/" class="article-date">
+  <time class="dt-published" datetime="2021-09-29T09:29:45.000Z" itemprop="datePublished">2021-09-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E6%8A%98%E8%85%BE/">日常折腾</a>►<a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E6%8A%98%E8%85%BE/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%92%8C%E5%B7%A5%E5%85%B7/">开发环境和工具</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Idea 使用小技巧
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>从一开始的<code>Eclipse</code>，到<code>MyEclipse</code>，最后到<code>idea</code>，大致是我使用Java IDE的一个轨迹，而现在基本上是只有在使用<code>idea</code>进行Java开发了。作为一个IDE，无论是界面，还是代码提示和修改，亦或是对各种框架和工具的支持，方方面面，它都带给我特别多惊喜。故而在这里总结记录分享一点在使用<code>idea</code>时用到的特性和技巧。</p>
+<span id="more"></span>
+
+<h2 id="区域折叠-Region-Folding"><a href="#区域折叠-Region-Folding" class="headerlink" title="区域折叠(Region Folding)"></a>区域折叠(Region Folding)</h2><p>上学的时候接触过C#，它有三个特性给我留下了深刻印象。一个是<code>Accessor</code>，一个是<code>patial class</code>，还有一个就是<code>#region</code>指令。</p>
+<p><code>region</code>指令给出一段代码的描述，并且使我们可以在IDE中把它折叠起来！多棒的特性啊,提升代码可读性，让代码变得清晰美观,方便进行开发。</p>
+<p>到了现在，工作中主要开发语言是<code>Java</code>，我经常遇到这样一些情况：</p>
+<ol>
+<li><p>简单对象</p>
+<p>根据业务的不同，开发过程中可能出现<code>POJO</code>，<code>Entity</code>，<code>PO</code>，<code>VO</code>，<code>DTO</code>等各种类。不管这些词的严格定义是什么，他们一定都是用于承载数据的。所以这个特点决定了它可能会拥有大量的属性，所以同时会有大量的<code>getter/setter</code>，可能也会有很多不同的<code>constructor</code>。此外还会有重载的<code>toString</code>，<code>hashCode</code>和<code>equals</code>函数。这些函数在完成以后，几乎很少再去浏览他们，浏览最多的还是类的属性，注解以及一些自定义的转换函数。</p>
+</li>
+<li><p>工具类</p>
+<p>一个工具类中，可能会有大量函数。而很多函数功能/目的/类型一样。就比如一个<code>StringUtils</code>里，可能会有一些函数是用来进行字符串替换的。而另一部分可能是用来处理不同字符集的。</p>
+</li>
+<li><p>复杂函数</p>
+<p>不管怎么强调<code>单一职责</code>，面对一些复杂的业务场景，或者复杂的算法计算时，一个函数还是可能会变得非常冗长，导致代码可读性和开发效率降低。</p>
+</li>
+</ol>
+<p>而区域折叠，则可以解决这些问题！</p>
+<p>在<code>idea</code>中，选中一段代码，右键-&gt;<code>Folding</code>-&gt;<code>Folding Selection/Remove region</code>，这段代码就被折叠起来了。和其他被折叠的函数和类一样，鼠标悬浮就能看到折叠的内容。并且idea在行号出添加了一个小<code>+</code>按钮,之后可以通过按钮来进行代码折叠/展开。</p>
+<p>这个操作的默认快捷键应该是<code>Ctrl-.</code>。</p>
+<h2 id="链式Setter"><a href="#链式Setter" class="headerlink" title="链式Setter"></a>链式<code>Setter</code></h2><p>记得第一次接触到链式调用，是在大学的<code>Android</code>课。犹记得是一段属性设置的代码，直接<code>inst.afoo(a).bfoo(b).cfoo(c1, c2)...</code>就完成了，让我只能用一个字描述，那就是<strong>爽!</strong></p>
+<p>而<code>idea</code>能够直接生成这样的<code>setter</code>:</p>
+<img src="/idea-tricks/idea-default-builder.png" class="" title="idea default builder">
+
+<p>如上图，在<code>Template</code>中直接选择<code>Builder</code>即可。对于上面的这几个属性,生成的<code>setter</code>如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> HeatTemp <span class="title">setLng</span><span class="params">(<span class="keyword">float</span> lng)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.lng = lng;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> HeatTemp <span class="title">setLat</span><span class="params">(<span class="keyword">float</span> lat)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.lat = lat;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> HeatTemp <span class="title">setCount</span><span class="params">(<span class="keyword">int</span> count)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.count = count;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样我们就可以一<code>set</code>到底了。</p>
+<h2 id="自定义Getter-Setter"><a href="#自定义Getter-Setter" class="headerlink" title="自定义Getter/Setter"></a>自定义<code>Getter/Setter</code></h2><p>虽然<code>idea</code>自带了链式<code>setter</code>的模板，但是还是不能让我满意。</p>
+<p>一直我都不太喜欢所谓的<code>JavaBeanName</code>规范。所以,在一些不会引起冲突和错误的地方，我会优先使用自己习惯的命名方式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// in class A</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">int</span> value;       <span class="comment">// property</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">value</span><span class="params">()</span></span>; 	 <span class="comment">// getter</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">value</span><span class="params">(<span class="keyword">int</span> v)</span></span>; <span class="comment">// setter</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> A <span class="title">value</span><span class="params">(<span class="keyword">int</span> v)</span></span>;   <span class="comment">// chain setter</span></span><br></pre></td></tr></table></figure>
+
+<p>还好，<code>idea</code>在很多地方能够自定义模板,这也包括了<code>getter/setter</code>的生成。</p>
+<p>在生成<code>getter/setter</code>时，点击<code>Template</code>后方按钮，可以进行自定义模板。</p>
+<p>我的<code>Getter</code>模板如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#<span class="keyword">if</span>($field.modifierStatic)</span><br><span class="line"><span class="keyword">static</span> ##</span><br><span class="line">#end</span><br><span class="line">$field.type ##</span><br><span class="line">$&#123;field.name&#125;##</span><br><span class="line">() &#123;</span><br><span class="line"><span class="keyword">return</span> $field.name;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>Setter</code>模板如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">#set($paramName = $helper.getParamName($field, $project))</span><br><span class="line"><span class="keyword">public</span> ##</span><br><span class="line">#<span class="keyword">if</span>($field.modifierStatic)</span><br><span class="line"><span class="keyword">static</span> ##</span><br><span class="line"><span class="keyword">void</span> ##</span><br><span class="line">#<span class="keyword">else</span></span><br><span class="line">$&#123;class.name&#125; ##</span><br><span class="line">#end</span><br><span class="line">$paramName($field.type $paramName) &#123;##</span><br><span class="line">#<span class="keyword">if</span> ($field.name == $paramName)</span><br><span class="line">    #<span class="keyword">if</span> (!$field.modifierStatic)</span><br><span class="line">    <span class="keyword">this</span>.##</span><br><span class="line">    #<span class="keyword">else</span></span><br><span class="line">        $classname.##</span><br><span class="line">    #end</span><br><span class="line">#end</span><br><span class="line">$field.name = $paramName;</span><br><span class="line">#<span class="keyword">if</span>(!$field.modifierStatic)</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">#end</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>生成的代码大致是这个样子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sample</span> </span>&#123;</span><br><span class="line">    <span class="keyword">long</span> id;</span><br><span class="line">    String name;</span><br><span class="line">    Color color;</span><br><span class="line">    Point location;</span><br><span class="line">    <span class="keyword">static</span> Double threshold;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">id</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Sample <span class="title">id</span><span class="params">(<span class="keyword">long</span> id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.id = id;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">name</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Sample <span class="title">name</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Color <span class="title">color</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> color;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Sample <span class="title">color</span><span class="params">(Color color)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.color = color;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Point <span class="title">location</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> location;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Sample <span class="title">location</span><span class="params">(Point location)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.location = location;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Double <span class="title">threshold</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> threshold;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">threshold</span><span class="params">(Double threshold)</span> </span>&#123;</span><br><span class="line">        Sample.threshold = threshold;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://blogs.lifesucks.cn/idea-tricks/" data-id="cku5boypm0008i5s12eaf4fjw" data-title="Idea 使用小技巧" class="article-share-link">分享</a>
+      
+      
+        <a href="/idea-tricks/#comments" class="article-comment-link">
+          <span class="post-comments-count valine-comment-count" data-xid="/idea-tricks/" itemprop="commentCount"></span>
+          留言
+        </a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IDE/" rel="tag">IDE</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/mobile-device-as-2nd-screen/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">使用移动设备作为Linux副屏</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+  <section id="comments" class="vcomment">
+
+  </section>
+</section>
+        <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/IDE/" rel="tag">IDE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blogs/" rel="tag">blogs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cg/" rel="tag">cg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grammar/" rel="tag">grammar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/" rel="tag">动态代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/idea-tricks/">Idea 使用小技巧</a>
+          </li>
+        
+          <li>
+            <a href="/mobile-device-as-2nd-screen/">使用移动设备作为Linux副屏</a>
+          </li>
+        
+          <li>
+            <a href="/string-append/">string::append的问题</a>
+          </li>
+        
+          <li>
+            <a href="/sutherland-hodgman/">多边形裁减 - Sutherland Hodgman算法</a>
+          </li>
+        
+          <li>
+            <a href="/java-dynamic-proxy/">Java中的动态代理</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c++</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/cg/">cg</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8%E6%8A%98%E8%85%BE/">日常折腾</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8%E6%8A%98%E8%85%BE/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8%E6%8A%98%E8%85%BE/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%92%8C%E5%B7%A5%E5%85%B7/">开发环境和工具</a></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li></ul>
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  
+
+  
+    <div id="beian" class="beian">
+        <a target="_blank" rel="noopener" href="https://beian.miit.gov.cn">陇ICP备2021001897号-1</a>
+      
+    </div>
+    
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 By Autoload<br>
+      Driven - <a href="https://hexo.io/" target="_blank">Hexo</a>|Theme - <a href="https://github.com/autoload/hexo-theme-auto" target="_blank">Auto</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  
+<script src="https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js"></script>
+
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = 'false' == true;
+    var verify = 'false' == true;
+    new Valine({
+        el: '.vcomment',
+        notify: notify,
+        verify: verify,
+        appId: "ELq6YoLEdIYWW6r5D9h9w0wO-gzGzoHsz",
+        appKey: "IKk1GUtDqU8rP1sUjm2L1YJQ",
+        placeholder: "say sth?",
+        pageSize:'10',
+        avatar:'mm',
+        lang:'en'
+    });
+</script>
+
+  </div>
+</body>
+</html>
