@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>关于 | Lifesucks</title>
+  <title>修改Java中的数字 | Lifesucks</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   
     <link rel="shortcut icon" href="/favicon.png">
@@ -45,12 +45,16 @@
 </header>
 
       <div class="outer">
-        <section id="main"><article id="page-" class="h-entry article article-type-page" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <section id="main"><article id="post-change-int" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/about/index.html" class="article-date">
-  <time class="dt-published" datetime="2021-07-04T20:56:09.000Z" itemprop="datePublished">2021-07-05</time>
+    <a href="/change-int/" class="article-date">
+  <time class="dt-published" datetime="2022-02-25T08:45:03.000Z" itemprop="datePublished">2022-02-25</time>
 </a>
     
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/java/">java</a>
+  </div>
+
   </div>
   <div class="article-inner">
     
@@ -59,7 +63,7 @@
         
   
     <h1 class="p-name article-title" itemprop="headline name">
-      关于
+      修改Java中的数字
     </h1>
   
 
@@ -67,23 +71,55 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h1 id="About-this-site"><a href="#About-this-site" class="headerlink" title="About this site"></a>About this site</h1><p>随心记录生活、工作或学习中遇到的事物。<br>生活不易，那么就多做点自己喜欢的事吧。</p>
+        <p>逛某乎时,看到一个关于Java的有意思的回答<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/37760140/answer/74175117">你可以通过反射把false变成true！</a>.</p>
+<p>于是,一时兴起,顺手试试反射修改<code>Integer</code>吧.于是有了下面这段代码.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.lang.reflect.Array;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ChangeInt</span> </span>&#123;</span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">         <span class="keyword">var</span> cls = Integer.class.getDeclaredClasses()[<span class="number">0</span>];</span><br><span class="line">         <span class="keyword">var</span> cache = cls.getDeclaredField(<span class="string">&quot;cache&quot;</span>);</span><br><span class="line">         cache.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">         <span class="keyword">var</span> arr = cache.get(<span class="keyword">null</span>);</span><br><span class="line">         <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">256</span>; ++i)&#123;</span><br><span class="line">             Array.set(arr, i, <span class="number">0</span>);</span><br><span class="line">         &#125;</span><br><span class="line">         Integer i = <span class="number">111</span>;</span><br><span class="line">         <span class="keyword">int</span> pi = <span class="number">111</span>;</span><br><span class="line">         Integer ii = Integer.valueOf(<span class="number">111</span>);</span><br><span class="line">         System.out.printf(<span class="string">&quot;i: %d, pi: %d, ii: %d\n&quot;</span>, i, pi, ii);</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<p>于是,这段代码的输出是:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">i: 0, pi: 0, ii: 0</span><br></pre></td></tr></table></figure>
+
+<p>同样,修改<code>Byte</code>, <code>Short</code>和<code>Long</code>中的<code>cache</code>,就可以改变对应类型的数字.<br>不过,这样还是只能修改一个<code>byte</code>范围内的数字.</p>
+<p>但是,我们可以通过修改<code>Integer::DigitOnes</code>, <code>Integer::DigitTens</code>和<code>Integer::digits</code>的值,来改变所有整形数字的输出:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> field = Integer.class.getDeclaredField(<span class="string">&quot;digits&quot;</span>);</span><br><span class="line">field.setAccessible(<span class="keyword">true</span>);</span><br><span class="line"><span class="keyword">var</span> digits = field.get(<span class="keyword">null</span>);</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; Array.getLength(digits); ++i)&#123;</span><br><span class="line">    Array.set(digits, i, (<span class="keyword">char</span>)(<span class="string">&#x27;1&#x27;</span> + Math.random() * <span class="number">10</span>));</span><br><span class="line">&#125;</span><br><span class="line">System.out.println(Integer.toString(<span class="number">0x123456</span>, <span class="number">16</span>));</span><br></pre></td></tr></table></figure>
+
+<p>上述代码一个可能的输出是:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">672929</span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://blogs.lifesucks.cn/about/index.html" data-id="cl026sixm0000lls1a9rt2ilw" data-title="关于" class="article-share-link">Share</a>
+      <a data-url="https://blogs.lifesucks.cn/change-int/" data-id="cl026sixp0001lls19qnhh69l" data-title="修改Java中的数字" class="article-share-link">Share</a>
       
       
+        <a href="/change-int/#comments" class="article-comment-link">
+          <span class="post-comments-count valine-comment-count" data-xid="/change-int/" itemprop="commentCount"></span>
+          Comments
+        </a>
       
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java%E8%AF%AD%E6%B3%95/" rel="tag">Java语法</a></li></ul>
+
     </footer>
   </div>
   
     
+<nav id="article-nav">
+  
+  
+    <a href="/idea-tricks/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Idea 使用小技巧</div>
+    </a>
+  
+</nav>
+
   
 </article>
 
 
+
+  <section id="comments" class="vcomment">
+
+  </section>
 </section>
         <aside id="sidebar">
   
