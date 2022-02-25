@@ -72,7 +72,10 @@
     <div class="e-content article-entry" itemprop="articleBody">
       
         <p>逛某乎时,看到一个关于Java的有意思的回答<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/37760140/answer/74175117">你可以通过反射把false变成true！</a>.</p>
-<p>于是,一时兴起,顺手试试反射修改<code>Integer</code>吧.于是有了下面这段代码.</p>
+<p>于是,一时兴起,顺手试试反射修改<code>Integer</code>吧.</p>
+<span id="more"></span>
+
+<p>然后就有了下面这段代码.</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.lang.reflect.Array;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ChangeInt</span> </span>&#123;</span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">         <span class="keyword">var</span> cls = Integer.class.getDeclaredClasses()[<span class="number">0</span>];</span><br><span class="line">         <span class="keyword">var</span> cache = cls.getDeclaredField(<span class="string">&quot;cache&quot;</span>);</span><br><span class="line">         cache.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">         <span class="keyword">var</span> arr = cache.get(<span class="keyword">null</span>);</span><br><span class="line">         <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">256</span>; ++i)&#123;</span><br><span class="line">             Array.set(arr, i, <span class="number">0</span>);</span><br><span class="line">         &#125;</span><br><span class="line">         Integer i = <span class="number">111</span>;</span><br><span class="line">         <span class="keyword">int</span> pi = <span class="number">111</span>;</span><br><span class="line">         Integer ii = Integer.valueOf(<span class="number">111</span>);</span><br><span class="line">         System.out.printf(<span class="string">&quot;i: %d, pi: %d, ii: %d\n&quot;</span>, i, pi, ii);</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>于是,这段代码的输出是:</p>
@@ -87,7 +90,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://blogs.lifesucks.cn/change-int/" data-id="cl026sixp0001lls19qnhh69l" data-title="修改Java中的数字" class="article-share-link">Share</a>
+      <a data-url="https://blogs.lifesucks.cn/change-int/" data-id="cl0274bdk0001vfs13yuvcove" data-title="修改Java中的数字" class="article-share-link">Share</a>
       
       
         <a href="/change-int/#comments" class="article-comment-link">

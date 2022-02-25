@@ -74,22 +74,16 @@
     <div class="e-content article-entry" itemprop="articleBody">
       
         <p>逛某乎时,看到一个关于Java的有意思的回答<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/37760140/answer/74175117">你可以通过反射把false变成true！</a>.</p>
-<p>于是,一时兴起,顺手试试反射修改<code>Integer</code>吧.于是有了下面这段代码.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.lang.reflect.Array;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ChangeInt</span> </span>&#123;</span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">         <span class="keyword">var</span> cls = Integer.class.getDeclaredClasses()[<span class="number">0</span>];</span><br><span class="line">         <span class="keyword">var</span> cache = cls.getDeclaredField(<span class="string">&quot;cache&quot;</span>);</span><br><span class="line">         cache.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">         <span class="keyword">var</span> arr = cache.get(<span class="keyword">null</span>);</span><br><span class="line">         <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">256</span>; ++i)&#123;</span><br><span class="line">             Array.set(arr, i, <span class="number">0</span>);</span><br><span class="line">         &#125;</span><br><span class="line">         Integer i = <span class="number">111</span>;</span><br><span class="line">         <span class="keyword">int</span> pi = <span class="number">111</span>;</span><br><span class="line">         Integer ii = Integer.valueOf(<span class="number">111</span>);</span><br><span class="line">         System.out.printf(<span class="string">&quot;i: %d, pi: %d, ii: %d\n&quot;</span>, i, pi, ii);</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>于是,这段代码的输出是:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">i: 0, pi: 0, ii: 0</span><br></pre></td></tr></table></figure>
-
-<p>同样,修改<code>Byte</code>, <code>Short</code>和<code>Long</code>中的<code>cache</code>,就可以改变对应类型的数字.<br>不过,这样还是只能修改一个<code>byte</code>范围内的数字.</p>
-<p>但是,我们可以通过修改<code>Integer::DigitOnes</code>, <code>Integer::DigitTens</code>和<code>Integer::digits</code>的值,来改变所有整形数字的输出:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> field = Integer.class.getDeclaredField(<span class="string">&quot;digits&quot;</span>);</span><br><span class="line">field.setAccessible(<span class="keyword">true</span>);</span><br><span class="line"><span class="keyword">var</span> digits = field.get(<span class="keyword">null</span>);</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; Array.getLength(digits); ++i)&#123;</span><br><span class="line">    Array.set(digits, i, (<span class="keyword">char</span>)(<span class="string">&#x27;1&#x27;</span> + Math.random() * <span class="number">10</span>));</span><br><span class="line">&#125;</span><br><span class="line">System.out.println(Integer.toString(<span class="number">0x123456</span>, <span class="number">16</span>));</span><br></pre></td></tr></table></figure>
-
-<p>上述代码一个可能的输出是:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">672929</span><br></pre></td></tr></table></figure>
+<p>于是,一时兴起,顺手试试反射修改<code>Integer</code>吧.</p>
+        
+          <p class="article-more-link">
+            <a href="/change-int/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://blogs.lifesucks.cn/change-int/" data-id="cl026sixp0001lls19qnhh69l" data-title="修改Java中的数字" class="article-share-link">Share</a>
+      <a data-url="https://blogs.lifesucks.cn/change-int/" data-id="cl0274bdk0001vfs13yuvcove" data-title="修改Java中的数字" class="article-share-link">Share</a>
       
       
         <a href="/change-int/#comments" class="article-comment-link">
@@ -143,7 +137,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://blogs.lifesucks.cn/idea-tricks/" data-id="cl026sixy0007lls17svd86xk" data-title="Idea 使用小技巧" class="article-share-link">Share</a>
+      <a data-url="https://blogs.lifesucks.cn/idea-tricks/" data-id="cl0274bds0007vfs14nry51g2" data-title="Idea 使用小技巧" class="article-share-link">Share</a>
       
       
         <a href="/idea-tricks/#comments" class="article-comment-link">
@@ -198,7 +192,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://blogs.lifesucks.cn/mobile-device-as-2nd-screen/" data-id="cl026siy00009lls1aarme963" data-title="使用移动设备作为Linux副屏" class="article-share-link">Share</a>
+      <a data-url="https://blogs.lifesucks.cn/mobile-device-as-2nd-screen/" data-id="cl0274bdv0009vfs1042ud57q" data-title="使用移动设备作为Linux副屏" class="article-share-link">Share</a>
       
       
         <a href="/mobile-device-as-2nd-screen/#comments" class="article-comment-link">
@@ -254,7 +248,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://blogs.lifesucks.cn/string-append/" data-id="cl026siy2000dlls11vg0adle" data-title="string::append的问题" class="article-share-link">Share</a>
+      <a data-url="https://blogs.lifesucks.cn/string-append/" data-id="cl0274bdw000dvfs1h9h56piz" data-title="string::append的问题" class="article-share-link">Share</a>
       
       
         <a href="/string-append/#comments" class="article-comment-link">
@@ -308,7 +302,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://blogs.lifesucks.cn/sutherland-hodgman/" data-id="cl026siy3000ells11lx1dj8x" data-title="多边形裁减 - Sutherland Hodgman算法" class="article-share-link">Share</a>
+      <a data-url="https://blogs.lifesucks.cn/sutherland-hodgman/" data-id="cl0274bdy000evfs1dmjqb7b0" data-title="多边形裁减 - Sutherland Hodgman算法" class="article-share-link">Share</a>
       
       
         <a href="/sutherland-hodgman/#comments" class="article-comment-link">
@@ -367,7 +361,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://blogs.lifesucks.cn/java-dynamic-proxy/" data-id="cl026sixz0008lls1elcdb1j9" data-title="Java中的动态代理" class="article-share-link">Share</a>
+      <a data-url="https://blogs.lifesucks.cn/java-dynamic-proxy/" data-id="cl0274bdu0008vfs1aq920tgk" data-title="Java中的动态代理" class="article-share-link">Share</a>
       
       
         <a href="/java-dynamic-proxy/#comments" class="article-comment-link">
@@ -418,7 +412,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://blogs.lifesucks.cn/hellohexo/" data-id="cl026sixt0003lls16tr2b6au" data-title="Hello, Hexo!" class="article-share-link">Share</a>
+      <a data-url="https://blogs.lifesucks.cn/hellohexo/" data-id="cl0274bdo0003vfs1aia32t4u" data-title="Hello, Hexo!" class="article-share-link">Share</a>
       
       
         <a href="/hellohexo/#comments" class="article-comment-link">
