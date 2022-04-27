@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Linux终端下的显示效果 | Lifesucks</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Lifesucks</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-linux-term-effects" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/linux-term-effects/" class="article-date">
+  <time class="dt-published" datetime="2022-04-27T03:36:04.000Z" itemprop="datePublished">2022-04-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Linux终端下的显示效果
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>在尝试开发一个控制台程序的时候,接触到了控制台转义字符(Escape Code),可以用于控制光标或达到一些特殊显示效果,比如<code>lolcat</code>.</p>
+<img src="/linux-term-effects/lolcat.gif" class="" title="lolcat">
+
+<p>趁此机会,记录一下这些操作.</p>
+<span id="more"></span>
+
+<h2 id="CSI序列"><a href="#CSI序列" class="headerlink" title="CSI序列"></a>CSI序列</h2><p>CSI(Control Sequence Introducer)是一系列控制控制台下特殊效果的代码序列, 它们以<code>ESC[</code>开始,后接不同的控制参数.<br><code>ESC</code>字符即<code>ASCII</code>值<code>27</code>,可以用如下方式得到:</p>
+<ul>
+<li><p><code>\e</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo -e &quot;hello, \e[31mworld\e[0m&quot;</span><br></pre></td></tr></table></figure></li>
+<li><p><code>\033</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo -e &quot;hello, \033[31mworld\033[0m&quot;</span><br></pre></td></tr></table></figure></li>
+<li><p><code>\x1b</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo -e &quot;hello, \x1b[31mworld\x1b[0m&quot;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>以上三种方式完全一致,都是输出普通颜色的<code>hello</code>和红色的<code>world</code>.</p>
+<p>顺带一提, 我测试过的语言中,只有<code>C/C++</code>支持<code>\e</code>转义方式.其他语言可以使用八进制或16进制的转义方式实现.一些语言默认使用了16位宽字符,可以用<code>\u</code>实现.</p>
+<p>如<code>Go</code>语言:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">fmt.Println(<span class="string">&quot;hello, \033[31mworld\033[0m&quot;</span>)</span><br><span class="line">fmt.Println(<span class="string">&quot;hello, \x1b[31mworld\x1b[0m&quot;</span>)</span><br><span class="line">fmt.Println(<span class="string">&quot;hello, \u001b[31mworld\x1b[0m&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><code>Java</code>的字符串转义没有<code>\x</code>:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(<span class="string">&quot;\033[31mhello, \033[0m world!&quot;</span>);</span><br><span class="line">System.out.println(<span class="string">&quot;\u001b[31mhello, \u001b[0m world!&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p><code>CSI</code>有很多有趣的控制命令, 如<code>echo -e &quot;\e[?25l&quot;</code>可以隐藏光标, <code>echo -e &quot;\e[H\e[0J&quot;</code>会将光标移动至屏幕左上角并清空屏幕,也就是相当于一次<code>clear</code>.</p>
+<p><code>CSI</code>用于控制显示效果的序列被称为<code>SGR(Select Graphic Rendition)</code>,主要包括字体样式和颜色的设置,代码为<code>CSI n m</code>.其中,<code>n</code>为不同的数字代码,例如上面例子中的<code>\e[31m</code>就是设置颜色为红色.<code>n</code>可以同时有多个,以<code>;</code>隔开.</p>
+<p>终端以状态机的形式设置这些效果,所以<code>\e[31m</code>设置了红色以后,整个终端的输出会一直编是红色,直到另一个效果覆盖了它,或者这个效果被取消.</p>
+<h2 id="字体样式"><a href="#字体样式" class="headerlink" title="字体样式"></a>字体样式</h2><p>这里的字体样式是指诸如<code>粗体</code>,<code>斜体</code>,<code>下划线</code>这些显示效果,而不是设置如<code>宋体</code>,<code>Consolas</code>这些字体.</p>
+<p>效果如下:</p>
+<table>
+<thead>
+<tr>
+<th align="center">Code</th>
+<th>Desc</th>
+<th>Preview</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td>粗体(Bold/Bright)</td>
+<td><img src="/linux-term-effects/bold.jpg" class="" title="bold"></td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td>黯淡(Dim/Faint)</td>
+<td><img src="/linux-term-effects/dim.jpg" class="" title="dim"></td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td>斜体(Italicized)</td>
+<td><img src="/linux-term-effects/italic.jpg" class="" title="italic"></td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td>下划线(Underline)</td>
+<td><img src="/linux-term-effects/underline.jpg" class="" title="underline"></td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td>闪烁(Blink)</td>
+<td><img src="/linux-term-effects/blink.gif" class="" title="blink"></td>
+</tr>
+<tr>
+<td align="center">7</td>
+<td>反转前景和背景颜色(Inverse)</td>
+<td><img src="/linux-term-effects/inverse.jpg" class="" title="inverse"></td>
+</tr>
+<tr>
+<td align="center">8</td>
+<td>隐藏(Invisible/Hidden)</td>
+<td><img src="/linux-term-effects/hidden.jpg" class="" title="hidden"></td>
+</tr>
+<tr>
+<td align="center">9</td>
+<td>删除线(Strikethrough/Cross-out)</td>
+<td><img src="/linux-term-effects/cross-out.jpg" class="" title="cross-out"></td>
+</tr>
+</tbody></table>
+<p><strong>Tips</strong>:</p>
+<ul>
+<li><p>如上所说,可以同时设置多种效果</p>
+<p>例如<code>\e[1;3;4;9m</code>可以同时设置粗体,斜体,下划线和删除线</p>
+</li>
+<li><p>粗体和黯淡,下划线和双重下划线分别是同一类样式,会互相覆盖</p>
+</li>
+<li><p>隐藏不是不显示内容</p>
+<p>隐藏效果其实只是让文字的前景色和背景色一样,这段文字还是可以被复制的.</p>
+<p>所以千万不要用来用这个效果处理真正敏感的信息,顶多可以用来做一些’反白’的小彩蛋</p>
+</li>
+<li><p>代码<code>6</code>在标准和终端实现文档里都没有记录,不过测试后,发现它的效果也是闪烁.</p>
+</li>
+<li><p>这些效果在不同的终端也会有不同的显示效果</p>
+<p>例如,<code>vte</code>下这些效果显示如下:</p>
+<img src="/linux-term-effects/vte-effects.gif" class="" title="vte-effects"></li>
+</ul>
+<h2 id="取消字体样式"><a href="#取消字体样式" class="headerlink" title="取消字体样式"></a>取消字体样式</h2><p>如上所说,终端是一个状态机,上面的显示的效果可以由对应的指定取消掉.</p>
+<table>
+<thead>
+<tr>
+<th align="center">Code</th>
+<th>Desc</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">0</td>
+<td>恢复默认,即取消所有特殊效果,包括之后会提到的设置颜色</td>
+</tr>
+<tr>
+<td align="center">22</td>
+<td>取消粗体或黯淡效果</td>
+</tr>
+<tr>
+<td align="center">23</td>
+<td>取消斜体</td>
+</tr>
+<tr>
+<td align="center">24</td>
+<td>取消下划线</td>
+</tr>
+<tr>
+<td align="center">25</td>
+<td>取消闪烁</td>
+</tr>
+<tr>
+<td align="center">27</td>
+<td>取消发转</td>
+</tr>
+<tr>
+<td align="center">28</td>
+<td>取消隐藏</td>
+</tr>
+<tr>
+<td align="center">29</td>
+<td>取消删除线</td>
+</tr>
+</tbody></table>
+<p><strong>Tips</strong>:</p>
+<ul>
+<li><p>基本上,<a href="#%E5%AD%97%E4%BD%93%E6%A0%B7%E5%BC%8F">字体样式</a>中的效果代码加上20就是取消这个效果的代码</p>
+</li>
+<li><p>粗体(<code>1</code>)和黯淡(<code>2</code>)都使用代码<code>22</code>来取消,下划线(<code>4</code>)和双重下划线(<code>21</code>)都使用代码<code>24</code>来取消</p>
+</li>
+<li><p>虽然,代码<code>25</code>可以取消代码<code>6</code>的闪烁效果,但是<code>26</code>没有实际效果</p>
+</li>
+</ul>
+<h2 id="颜色设置"><a href="#颜色设置" class="headerlink" title="颜色设置"></a>颜色设置</h2><h3 id="8色和16色"><a href="#8色和16色" class="headerlink" title="8色和16色"></a>8色和16色</h3><table>
+<thead>
+<tr>
+<th>颜色</th>
+<th>前景代码</th>
+<th>背景代码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>黑色</td>
+<td>30</td>
+<td>40</td>
+</tr>
+<tr>
+<td>红色</td>
+<td>31</td>
+<td>41</td>
+</tr>
+<tr>
+<td>绿色</td>
+<td>32</td>
+<td>42</td>
+</tr>
+<tr>
+<td>黄色</td>
+<td>33</td>
+<td>43</td>
+</tr>
+<tr>
+<td>蓝色</td>
+<td>34</td>
+<td>44</td>
+</tr>
+<tr>
+<td>品红(magenta)</td>
+<td>35</td>
+<td>45</td>
+</tr>
+<tr>
+<td>青色(Cyan)</td>
+<td>36</td>
+<td>46</td>
+</tr>
+<tr>
+<td>灰色</td>
+<td>37</td>
+<td>47</td>
+</tr>
+<tr>
+<td>默认</td>
+<td>39</td>
+<td>49</td>
+</tr>
+</tbody></table>
+<p>16色在8色的基础上,增加了对应的高亮度的颜色</p>
+<table>
+<thead>
+<tr>
+<th>颜色</th>
+<th>前景代码</th>
+<th>背景代码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>灰色</td>
+<td>90</td>
+<td>100</td>
+</tr>
+<tr>
+<td>亮红色</td>
+<td>91</td>
+<td>101</td>
+</tr>
+<tr>
+<td>亮绿色</td>
+<td>92</td>
+<td>102</td>
+</tr>
+<tr>
+<td>亮黄色</td>
+<td>93</td>
+<td>103</td>
+</tr>
+<tr>
+<td>亮蓝色</td>
+<td>94</td>
+<td>104</td>
+</tr>
+<tr>
+<td>亮品红(magenta)</td>
+<td>95</td>
+<td>105</td>
+</tr>
+<tr>
+<td>亮青色(Cyan)</td>
+<td>96</td>
+<td>106</td>
+</tr>
+<tr>
+<td>白色</td>
+<td>97</td>
+<td>107</td>
+</tr>
+</tbody></table>
+<p>这16种颜色在<code>xterm</code>中显示效果如下:</p>
+<img src="/linux-term-effects/16color-xterm.png" class="" title="16 color in xterm">
+
+<p>在<code>vte</code>下效果如下:</p>
+
+
+<p><strong>Tips</strong>:</p>
+<ul>
+<li><p>代码<code>39</code>和<code>49</code>分别用来重置前景和背景色,具体颜色取决于当前终端</p>
+</li>
+<li><p><code>vscode</code>的颜色取决于当前主题,所以最终效果是不可预期的.</p>
+<p>例如,这是在<code>Lichen Light</code>主题下的显示效果:</p>
+<img src="/linux-term-effects/16color-vscode-lichen-light.png" class="" title="16color in lichen light"></li>
+</ul>
+<h3 id="256色-8-bit-和24位色"><a href="#256色-8-bit-和24位色" class="headerlink" title="256色(8-bit)和24位色"></a>256色(8-bit)和24位色</h3><p>256色使用序列<code>38;5;n</code>和<code>48;5;n</code>来设置前景和背景色.<code>n</code>取值为<code>[0,255]</code>.</p>
+<p><code>xterm</code>中效果如下:</p>
+<img src="/linux-term-effects/256color.jpg" class="" title="256 color in xterm">
+
+<p>24位色使用序列<code>38;2;r;g;b</code>和<code>48;2;r;g;b</code>设置前景色和背景色.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">256</span>; i += <span class="number">6</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">256</span>; j += <span class="number">3</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;\x1b[38;2;%d;%d;255m#\x1b[0m&quot;</span>, i, j);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>xterm</code>中效果如下:</p>
+<img src="/linux-term-effects/24bit.jpg" class="" title="24bit color in xterm">
+
+
+
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a target="_blank" rel="noopener" href="https://misc.flogisoft.com/bash/tip_colors_and_formatting">Bash tips: Colors and formatting (ANSI/VT100 Control sequences)</a></p>
+<p><a target="_blank" rel="noopener" href="https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h4-Functions-using-CSI-_-ordered-by-the-final-character-lparen-s-rparen:CSI-Pm-m.1CA7">xterm</a></p>
+<p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/ANSI_escape_code">ANSI escape code</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://blogs.lifesucks.cn/linux-term-effects/" data-id="cl2h17ywg0009qgs19g9j4k8t" data-title="Linux终端下的显示效果" class="article-share-link">Share</a>
+      
+      
+        <a href="/linux-term-effects/#comments" class="article-comment-link">
+          <span class="post-comments-count valine-comment-count" data-xid="/linux-term-effects/" itemprop="commentCount"></span>
+          Comments
+        </a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/change-int/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">修改Java中的数字</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+  <section id="comments" class="vcomment">
+
+  </section>
+</section>
+        <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/IDE/" rel="tag">IDE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E8%AF%AD%E6%B3%95/" rel="tag">Java语法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blogs/" rel="tag">blogs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cg/" rel="tag">cg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grammar/" rel="tag">grammar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/" rel="tag">动态代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/linux-term-effects/">Linux终端下的显示效果</a>
+          </li>
+        
+          <li>
+            <a href="/change-int/">修改Java中的数字</a>
+          </li>
+        
+          <li>
+            <a href="/idea-tricks/">Idea 使用小技巧</a>
+          </li>
+        
+          <li>
+            <a href="/mobile-device-as-2nd-screen/">使用移动设备作为Linux副屏</a>
+          </li>
+        
+          <li>
+            <a href="/string-append/">string::append的问题</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c++</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/cg/">cg</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8%E6%8A%98%E8%85%BE/">日常折腾</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8%E6%8A%98%E8%85%BE/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8%E6%8A%98%E8%85%BE/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%92%8C%E5%B7%A5%E5%85%B7/">开发环境和工具</a></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li></ul>
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  
+
+  
+    <div id="beian" class="beian">
+        <a target="_blank" rel="noopener" href="https://beian.miit.gov.cn">陇ICP备2021001897号-1</a>
+      
+    </div>
+    
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2022 By Autoload<br>
+      Driven - <a href="https://hexo.io/" target="_blank">Hexo</a>|Theme - <a href="https://github.com/autoload/hexo-theme-auto" target="_blank">Auto</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  
+<script src="https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js"></script>
+
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = 'false' == true;
+    var verify = 'false' == true;
+    new Valine({
+        el: '.vcomment',
+        notify: notify,
+        verify: verify,
+        appId: "ELq6YoLEdIYWW6r5D9h9w0wO-gzGzoHsz",
+        appKey: "IKk1GUtDqU8rP1sUjm2L1YJQ",
+        placeholder: "say sth?",
+        pageSize:'10',
+        avatar:'mm',
+        lang:'en'
+    });
+</script>
+
+  </div>
+</body>
+</html>
