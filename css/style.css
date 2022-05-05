@@ -719,9 +719,18 @@ a.article-title:hover {
 }
 .article-comment-link {
   float: right;
+  margin-left: 20px;
 }
 .article-comment-link:before {
   content: "\f075";
+  font-family: FontAwesome;
+  padding-right: 8px;
+}
+.leancloud-visitors {
+  float: right;
+}
+.leancloud-visitors:before {
+  content: "\f06e";
   font-family: FontAwesome;
   padding-right: 8px;
 }
