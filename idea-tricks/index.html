@@ -45,12 +45,13 @@
 </header>
 
       <div class="outer">
-        <section id="main"><article id="post-idea-tricks" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <section id="main"><article id="post-idea-tricks" class="h-entry article article-type-post"
+  itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/idea-tricks/" class="article-date">
   <time class="dt-published" datetime="2021-09-29T09:29:45.000Z" itemprop="datePublished">2021-09-29</time>
 </a>
-    
+      
   <div class="article-category">
     <a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E6%8A%98%E8%85%BE/">日常折腾</a>►<a class="article-category-link" href="/categories/%E6%97%A5%E5%B8%B8%E6%8A%98%E8%85%BE/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%92%8C%E5%B7%A5%E5%85%B7/">开发环境和工具</a>
   </div>
@@ -58,20 +59,20 @@
   </div>
   <div class="article-inner">
     
-    
-      <header class="article-header">
-        
+      
+        <header class="article-header">
+          
   
     <h1 class="p-name article-title" itemprop="headline name">
       Idea 使用小技巧
     </h1>
   
 
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>从一开始的<code>Eclipse</code>，到<code>MyEclipse</code>，最后到<code>idea</code>，大致是我使用Java IDE的一个轨迹，而现在基本上是只有在使用<code>idea</code>进行Java开发了。作为一个IDE，无论是界面，还是代码提示和修改，亦或是对各种框架和工具的支持，方方面面，它都带给我特别多惊喜。故而在这里总结记录分享一点在使用<code>idea</code>时用到的特性和技巧。</p>
+        </header>
+        
+          <div class="e-content article-entry" itemprop="articleBody">
+            
+                      <p>从一开始的<code>Eclipse</code>，到<code>MyEclipse</code>，最后到<code>idea</code>，大致是我使用Java IDE的一个轨迹，而现在基本上是只有在使用<code>idea</code>进行Java开发了。作为一个IDE，无论是界面，还是代码提示和修改，亦或是对各种框架和工具的支持，方方面面，它都带给我特别多惊喜。故而在这里总结记录分享一点在使用<code>idea</code>时用到的特性和技巧。</p>
 <span id="more"></span>
 
 <h2 id="区域折叠-Region-Folding"><a href="#区域折叠-Region-Folding" class="headerlink" title="区域折叠(Region Folding)"></a>区域折叠(Region Folding)</h2><p>上学的时候接触过C#，它有三个特性给我留下了深刻印象。一个是<code>Accessor</code>，一个是<code>patial class</code>，还有一个就是<code>#region</code>指令。</p>
@@ -115,24 +116,30 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sample</span> </span>&#123;</span><br><span class="line">    <span class="keyword">long</span> id;</span><br><span class="line">    String name;</span><br><span class="line">    Color color;</span><br><span class="line">    Point location;</span><br><span class="line">    <span class="keyword">static</span> Double threshold;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">id</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Sample <span class="title">id</span><span class="params">(<span class="keyword">long</span> id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.id = id;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">name</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Sample <span class="title">name</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Color <span class="title">color</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> color;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Sample <span class="title">color</span><span class="params">(Color color)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.color = color;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Point <span class="title">location</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> location;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Sample <span class="title">location</span><span class="params">(Point location)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.location = location;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Double <span class="title">threshold</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> threshold;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">threshold</span><span class="params">(Double threshold)</span> </span>&#123;</span><br><span class="line">        Sample.threshold = threshold;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://blogs.lifesucks.cn/idea-tricks/" data-id="cla653lp20008lvs12jei8nri" data-title="Idea 使用小技巧" class="article-share-link">Share</a>
-      
-        <a href="/idea-tricks/#comments" class="article-comment-link">
-          <span class="post-comments-count valine-comment-count" data-xid="/idea-tricks/" itemprop="commentCount"></span>
-          Comments
-        </a>
-      
-      <a id="/idea-tricks/" class="leancloud-visitors" data-flag-title="cla653lp20008lvs12jei8nri">
-        <em class="post-meta-item-text">Visit</em>
-        <i class="leancloud-visitors-count">loading</i>
-      </a>
-      
+                        
+          </div>
+          <footer class="article-footer">
+            <!--<a data-url="https://blogs.lifesucks.cn/idea-tricks/" data-id="clabk9wq50009dgs15fyj4g8k" data-title="Idea 使用小技巧"
+              class="article-share-link">
+              Share
+            </a>-->
+            
+              <a href="/idea-tricks/#comments" class="article-comment-link">
+                <span class="post-comments-count valine-comment-count" data-xid="/idea-tricks/"
+                  itemprop="commentCount"></span>
+                Comments
+              </a>
+              
+                <a id="/idea-tricks/" class="leancloud-visitors" data-flag-title="clabk9wq50009dgs15fyj4g8k">
+					<span class="leancloud-visitors-count"></span>
+					<em class="post-meta-item-text">
+						Visit
+					</em>
+                </a>
+                
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IDE/" rel="tag">IDE</a></li></ul>
 
-    </footer>
+          </footer>
   </div>
   
     
@@ -155,14 +162,15 @@
   
 </nav>
 
-  
+      
 </article>
 
 
+    
+      <section id="comments" class="vcomment">
 
-  <section id="comments" class="vcomment">
-
-  </section>
+      </section>
+      
 </section>
         <aside id="sidebar">
   

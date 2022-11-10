@@ -45,12 +45,13 @@
 </header>
 
       <div class="outer">
-        <section id="main"><article id="post-auto-called-functions" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <section id="main"><article id="post-auto-called-functions" class="h-entry article article-type-post"
+  itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/auto-called-functions/" class="article-date">
   <time class="dt-published" datetime="2022-11-07T01:55:56.000Z" itemprop="datePublished">2022-11-07</time>
 </a>
-    
+      
   <div class="article-category">
     <a class="article-category-link" href="/categories/c/">c++</a>
   </div>
@@ -58,20 +59,20 @@
   </div>
   <div class="article-inner">
     
-    
-      <header class="article-header">
-        
+      
+        <header class="article-header">
+          
   
     <h1 class="p-name article-title" itemprop="headline name">
       写一些能够被自动调用的函数
     </h1>
   
 
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>在日常开发测试中，偶尔会有这样的需求，在一个cpp文件中，定义一些函数，而这些函数会在一定条件下被自动调用。</p>
+        </header>
+        
+          <div class="e-content article-entry" itemprop="articleBody">
+            
+                      <p>在日常开发测试中，偶尔会有这样的需求，在一个cpp文件中，定义一些函数，而这些函数会在一定条件下被自动调用。</p>
 <p>例如，我是在刷<code>leetcode</code>题的时候，遇到了超时的问题，于是乎想写几个<code>benchmark</code>函数测试一下性能。可是如果以后每次测性能都要重新写一遍的话，又很麻烦。于是乎，我有了这样一个需求：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// leetXX.cpp</span></span><br><span class="line">....</span><br><span class="line"></span><br><span class="line"><span class="built_in">MY_BENCH</span>(bench1)</span><br><span class="line">&#123;</span><br><span class="line">...</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">MY_BENCH</span>(bench2)</span><br><span class="line">&#123;</span><br><span class="line">...</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <span id="more"></span>
@@ -97,24 +98,30 @@
 
 <p>需要注意的是，宏不能替换字符串中的内容，所以这里使用<code>#fn</code>的方式拿到替换后的<code>fn</code>的内容。</p>
 
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://blogs.lifesucks.cn/auto-called-functions/" data-id="cla653los0001lvs10ulkgey5" data-title="写一些能够被自动调用的函数" class="article-share-link">Share</a>
-      
-        <a href="/auto-called-functions/#comments" class="article-comment-link">
-          <span class="post-comments-count valine-comment-count" data-xid="/auto-called-functions/" itemprop="commentCount"></span>
-          Comments
-        </a>
-      
-      <a id="/auto-called-functions/" class="leancloud-visitors" data-flag-title="cla653los0001lvs10ulkgey5">
-        <em class="post-meta-item-text">Visit</em>
-        <i class="leancloud-visitors-count">loading</i>
-      </a>
-      
+                        
+          </div>
+          <footer class="article-footer">
+            <!--<a data-url="https://blogs.lifesucks.cn/auto-called-functions/" data-id="clabk9wq00003dgs1gzi6d90l" data-title="写一些能够被自动调用的函数"
+              class="article-share-link">
+              Share
+            </a>-->
+            
+              <a href="/auto-called-functions/#comments" class="article-comment-link">
+                <span class="post-comments-count valine-comment-count" data-xid="/auto-called-functions/"
+                  itemprop="commentCount"></span>
+                Comments
+              </a>
+              
+                <a id="/auto-called-functions/" class="leancloud-visitors" data-flag-title="clabk9wq00003dgs1gzi6d90l">
+					<span class="leancloud-visitors-count"></span>
+					<em class="post-meta-item-text">
+						Visit
+					</em>
+                </a>
+                
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/c/" rel="tag">c++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/grammar/" rel="tag">grammar</a></li></ul>
 
-    </footer>
+          </footer>
   </div>
   
     
@@ -128,14 +135,15 @@
   
 </nav>
 
-  
+      
 </article>
 
 
+    
+      <section id="comments" class="vcomment">
 
-  <section id="comments" class="vcomment">
-
-  </section>
+      </section>
+      
 </section>
         <aside id="sidebar">
   
