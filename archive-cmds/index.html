@@ -73,6 +73,8 @@
           <div class="e-content article-entry" itemprop="articleBody">
             
                       <p>最近又时常在Linux下打包东西，所以整理一下常用格式的打包/解压命令。<br>后续有其他格式就继续在这片文章里更新。</p>
+<span id="more"></span>
+
 <h1 id="tar"><a href="#tar" class="headerlink" title="tar"></a>tar</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">tar -cf data.tar dir1 dir1 file1 file2 # 将dir1 dir2 file1 file2 打包为 data.tar</span><br><span class="line">tar -tf data.tar                       # 列出包内容</span><br><span class="line">tar -xf data.tar                       # 解压data.tar</span><br><span class="line">tar -xf data.tar file1                 # 解压出指定文件</span><br></pre></td></tr></table></figure>
 <p><strong>PS1</strong>：选项前面的<code>-</code>也可以省略，如<code>tar xf xx.tar</code>.<br><strong>PS2</strong>：可以用<code>v</code>查看详细信息或日志输出，如<code>tar -xvf xx.tar</code>.<br><strong>PS3</strong>： <code>tar</code>包是包含了文件的用户权限信息的。</p>
 <h1 id="gz-gzip"><a href="#gz-gzip" class="headerlink" title="gz/gzip"></a>gz/gzip</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">gzip file       # 将file压缩为file.gz</span><br><span class="line">gzip -d file.gz # 将file.gz还原为file</span><br><span class="line">gunzip file.gz  # 同上</span><br></pre></td></tr></table></figure>
