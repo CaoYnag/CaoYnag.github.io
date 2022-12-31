@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>从零开始的内网穿透 | Lifesucks</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Lifesucks</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/categories">Categories</a>
+        
+          <a class="main-nav-link" href="/tags">Tags</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-write-a-tcp-tunnel" class="h-entry article article-type-post"
+  itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/write-a-tcp-tunnel/" class="article-date">
+  <time class="dt-published" datetime="2022-12-31T09:55:56.000Z" itemprop="datePublished">2022-12-31</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%BD%91%E7%BB%9C/">网络</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+      
+        <header class="article-header">
+          
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      从零开始的内网穿透
+    </h1>
+  
+
+        </header>
+        
+          <div class="e-content article-entry" itemprop="articleBody">
+            
+                      <p>在跟朋友Terraria联机的过程中，我2G内存的小云服务器不堪重负，于是决定用内网穿透在我的树梅派上跑游戏服务器。<br>其实以前在Minecraft联机的时候，我就已经有想法用内网穿透搭搭麦块服务器了。当时尝试了github上的开源工具，不过被TX疯狂发短信和邮件报警。然后大家也不玩麦块了，所以就不再折腾了。<br>这次趁着闲，索性自己写一个工具。</p>
+<p>然后在这里也介绍一下内网穿透的原理，和怎样自己编写这样一个工具。</p>
+<span id="more"></span>
+
+<h2 id="什么是内网穿透"><a href="#什么是内网穿透" class="headerlink" title="什么是内网穿透"></a>什么是内网穿透</h2><p>我们可以通过ip连接到购买的服务器，但从服务器无法主动连接到我们本地的机器。这是因为没有从服务器到我们自己机器的正确路由。<br>但是高配置的服务器总是很贵。所以不如把服务部署在本地，再通过云服务器来间接的访问本地的服务。其实就和普通的代理有一点类似。</p>
+<p>普通的代理是，A访问不到C，但是A能访问到B，B能访问到C。所以我们可以在B搭建代理（例如ss5），然后A通过B这个代理去访问C。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">A ------ × ------&gt; C</span><br><span class="line">A ---&gt; B(ss5) ---&gt; C</span><br></pre></td></tr></table></figure>
+
+<p>内网穿透类似。只不过变成了A和C能访问到B，但是需要通过A访问C:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">A ------&gt; B &lt;------ C</span><br><span class="line">A ---- B(穿透) ---&gt; C</span><br></pre></td></tr></table></figure>
+
+<p>上面的A就是我们自己，C是我们的服务，而B就是我们的云服务器。<br>内网穿透可以有很多名字，比如什么隧道啊，NAT打洞啊之类。无论叫什么，其实都是差不多的意思，最终要实现的效果就是通过一个公网服务器，实现两个不同局域网的通信。</p>
+<h2 id="开始写代码吧！"><a href="#开始写代码吧！" class="headerlink" title="开始写代码吧！"></a>开始写代码吧！</h2><p>正常情况下，客户端到服务的连接应该是这样：</p>
+<img src="/write-a-tcp-tunnel/connection1.png" class="" title="connection">
+
+<p>如之前所说，由于客户端和服务在不同局域网，所以我们需要在云服务器使用一个程序连接这两端，并转发它们互相发送的数据包。<br>逻辑如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">packet_forward</span><span class="params">(SOCK src, SOCK dst)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> buff[<span class="number">2048</span>];</span><br><span class="line">    <span class="keyword">int</span>  n = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> ((n = <span class="built_in">recv</span>(src, buff, <span class="number">2048</span>, <span class="number">0</span>)) &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">send</span>(dst, buff, n, <span class="number">0</span>) &lt; <span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">srv</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	...</span><br><span class="line">	SOCK cli = <span class="built_in">acceot_client</span>();</span><br><span class="line">	SOCK svr = <span class="built_in">accept_server</span>();</span><br><span class="line">	std::<span class="built_in">thread</span>(std::<span class="built_in">bind</span>(packet_forward, cli, svr)).<span class="built_in">detach</span>();</span><br><span class="line">	std::<span class="built_in">thread</span>(std::<span class="built_in">bind</span>(packet_forward, svr, cli)).<span class="built_in">detach</span>();</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 等待转发线程结束</span></span><br><span class="line">	<span class="built_in">close</span>(cli);</span><br><span class="line">	<span class="built_in">close</span>(svr);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在服务器使用转发程序后的连接应该是这个样子。</p>
+<img src="/write-a-tcp-tunnel/connection2.png" class="" title="connection">
+
+<p>这时，如果服务程序自带反向能力，主动连接到我们的转发程序，就已经大功告成了。<br>可惜一般服务都没有这个功能（此处点名表扬ssh），所以我们还需要另一个转发程序主动连接云服务器和服务：</p>
+<img src="/write-a-tcp-tunnel/connection3.png" class="" title="connection">
+
+<p>姑且把云服务器端的转发程序叫做<code>hub</code>, 服务端的转发程序叫做<code>ep</code>好了。此时<code>hub</code>和<code>ep</code>逻辑应该如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">hub</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	SOCK cli = <span class="built_in">acceot_client</span>();</span><br><span class="line">	SOCK ep = <span class="built_in">accept_ep</span>();</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 转发数据</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ep</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	SOCK hub = <span class="built_in">connect_hub</span>();</span><br><span class="line">	SOCK svr = <span class="built_in">connect_svr</span>();</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 转发数据</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样，一条完整的通道就构建完成了。对于客户端和服务来说，中间的两个转发程序是完全透明的。</p>
+<p>但是，去穿透游戏服务也好，别的服务也好，不可能只有一个用户。并且我们无法预知用户连接的时间。所以我们需要在<code>hub</code>和<code>ep</code>之间建立一个链接，由<code>hub</code>通知<code>ep</code>何时去建立建立新的通道。<br>逻辑大致是这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1. hub启动并等待ep</span><br><span class="line">2. ep连接至hub, 并且此连接用作控制</span><br><span class="line">3. 用户连接至hub时，hub通过2中的控制连接通知ep</span><br><span class="line">4. ep收到通知，主动连接至服务和hub, 并在这两个连接之间转发数据</span><br><span class="line">5. hub收到ep的连接，并在此连接和用户连接转发数据</span><br></pre></td></tr></table></figure>
+
+<p>我的完整代码在<a target="_blank" rel="noopener" href="https://github.com/CaoYnag/net_tunnel">这里</a>。逻辑基本与上面一致。<br>不过为了方便编码，以及以后用于拓展，在<code>hub</code>监听了三个端口。</p>
+<ul>
+<li>用户访问的端口，对于用户来说，这就是它要访问的地址。</li>
+<li><code>ep</code>连接的端口，连接此端口的，作为<code>ep</code>对待。</li>
+<li>通道连接的端口，<code>hub</code>发出新连接的请求后，<code>ep</code>连接建立通道，并把一端连接至此端口。</li>
+</ul>
+<p>另外一个需要注意的点是，我们如何把<code>ep</code>的通道，对应至客户端的请求呢。<br>对于客户端来说，只要有通道可以用就可以了，是哪条还真不打紧。所以我们可以设置一个队列，所有的通道扔到里面，客户端从里面取就好。同样为了避免连接被关闭，可以设置一个超时时间，超时的通道直接被关闭。</p>
+<h2 id="其他问题"><a href="#其他问题" class="headerlink" title="其他问题"></a>其他问题</h2><ol>
+<li>负载/延时<br>由于整条通道由三条连接构成，所以延时一定会增加。<br>而且，每个数据包都要经过转发，也就是需要消耗两倍的上下行带宽。<br>我个人仅用作游戏服务器，而泰拉瑞亚对延时和带宽要求都很低，所以基本上是全程流畅无影响。<br>如果数据传输量比较大，可以使用<code>splice</code>等技术优化读写时间。</li>
+<li>健康检测（断线重连）<br><code>hub</code>和<code>ep</code>之间的通信连接可能由于各种情况中断（例如腾讯云会关闭一条长时间不用的连接）。<br>所以需要在此连接加入定期的心跳，发现连接断开后及时进行重连。</li>
+<li>防止爬虫和攻击<br>在加入日志后，我才发现每天都会有很多陌生的请求。这些请求大部分是一些网络爬虫。<br>我们需要防止的是<code>hub</code>把这些连接当做<code>ep</code>，或是当成<code>ep</code>建立的通道。<br>一方面，在<code>ep</code>连接到<code>hub</code>的时候，做一些简单的验证（例如我加上了一个简单的密码验证）。<br>在正确的<code>ep</code>连接以后，就只接收<code>ep</code>地址发来的连接作为通道，过滤掉其他地址发来的连接。</li>
+<li>连接池及连接复用<br>对于http服务，其实可以使用连接池，并复用连接。<br>但是对于一般的游戏服务器不行。</li>
+</ol>
+<p>目前这个穿透工具仍在继续运行，并且陪伴我和朋友结束了两个Terraria世界的旅行。<br>之后可能会修改这个工具做别的用处。<br><strong>PS</strong>: Terraria的服务器是用C#写的，且没有ARM版。所以我在树莓派运行的计划泡汤了，只能跑在我的小开发机上。</p>
+
+                        
+          </div>
+          <footer class="article-footer">
+            <!--<a data-url="https://blogs.lifesucks.cn/write-a-tcp-tunnel/" data-id="clcbucfj5000ttus1g12nbvul" data-title="从零开始的内网穿透"
+              class="article-share-link">
+              Share
+            </a>-->
+            
+              <a href="/write-a-tcp-tunnel/#comments" class="article-comment-link">
+                <span class="post-comments-count valine-comment-count" data-xid="/write-a-tcp-tunnel/"
+                  itemprop="commentCount"></span>
+                Comments
+              </a>
+            
+			
+                
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/c/" rel="tag">c++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li></ul>
+
+          </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/archive-cmds/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Linux下常用压缩/解压命令小结</div>
+    </a>
+  
+</nav>
+
+      
+</article>
+
+
+    
+      <section id="comments" class="vcomment">
+
+      </section>
+      
+</section>
+        <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/IDE/" rel="tag">IDE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E8%AF%AD%E6%B3%95/" rel="tag">Java语法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blogs/" rel="tag">blogs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cg/" rel="tag">cg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grammar/" rel="tag">grammar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jar/" rel="tag">jar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rar/" rel="tag">rar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tar/" rel="tag">tar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/" rel="tag">动态代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%BB%E7%BB%93/" rel="tag">总结</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/write-a-tcp-tunnel/">从零开始的内网穿透</a>
+          </li>
+        
+          <li>
+            <a href="/archive-cmds/">Linux下常用压缩/解压命令小结</a>
+          </li>
+        
+          <li>
+            <a href="/my-2022-summary/">我的2022年度总结</a>
+          </li>
+        
+          <li>
+            <a href="/auto-called-functions/">写一些能够被自动调用的函数</a>
+          </li>
+        
+          <li>
+            <a href="/linux-term-effects/">在Linux终端下搞颜色!</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/c/">c++</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/cg/">cg</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8%E6%8A%98%E8%85%BE/">日常折腾</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8%E6%8A%98%E8%85%BE/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8%E6%8A%98%E8%85%BE/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%92%8C%E5%B7%A5%E5%85%B7/">开发环境和工具</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%94%9F%E6%B4%BB/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BD%91%E7%BB%9C/">网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/12/">December 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/11/">November 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li></ul>
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  
+
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2022 By Autoload<br>
+      Driven - <a href="https://hexo.io/" target="_blank">Hexo</a>|Theme - <a href="https://github.com/autoload/hexo-theme-auto" target="_blank">Auto</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  
+<script src="https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js"></script>
+
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = 'false' == true;
+    var verify = 'false' == true;
+    new Valine({
+        el: '.vcomment',
+        notify: notify,
+        verify: verify,
+        appId: "ELq6YoLEdIYWW6r5D9h9w0wO-gzGzoHsz",
+        appKey: "IKk1GUtDqU8rP1sUjm2L1YJQ",
+        placeholder: "say sth?",
+        pageSize:'10',
+        avatar:'mm',
+        lang:'en',
+        visitor:'false'
+    });
+</script>
+
+  </div>
+</body>
+</html>
